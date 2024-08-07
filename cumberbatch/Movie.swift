@@ -5,8 +5,6 @@
 //  Created by Steven Rockarts on 2024-07-28.
 //
 
-
-
 import Foundation
 
 struct Movie: Identifiable, Codable {
@@ -19,4 +17,12 @@ struct Movie: Identifiable, Codable {
         case id, title, overview
         case posterPath = "poster_path"
     }
+}
+
+struct MovieCredits: Codable {
+    let cast: [Movie]
+}
+
+struct MovieResponse: Codable {
+    let results: [Movie]
 }

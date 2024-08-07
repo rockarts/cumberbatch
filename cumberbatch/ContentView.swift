@@ -7,19 +7,6 @@
 
 import SwiftUI
 
-class TaskManager: ObservableObject {
-    @Published var tasks: [String] = []
-    
-    func addTask(_ task:String) {
-        tasks.append(task)
-    }
-}
-
-class UserSettings: ObservableObject {
-    @Published var username: String = "Steven"
-    @Published var isDarkMode: Bool = false
-}
-
 struct ContentView: View {
     @State private var movies: [Movie] = []
     

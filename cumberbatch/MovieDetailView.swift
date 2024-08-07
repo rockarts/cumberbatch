@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MovieDetailView: View {
     let movie: Movie
+    @State private var relatedMovies: [Movie] = []
     
     var body: some View {
         ScrollView {
@@ -32,10 +33,31 @@ struct MovieDetailView: View {
                 
                 Text(movie.overview)
                     .font(.body)
+                
+                Text("Related Movies")
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 16) {
+                        ForEach(relatedMovies) { relatedMovie in
+                            MovieRow(movie: relatedMovie)
+                        }
+                    }
+                }
             }
             .padding()
+            .onAppear {
+                loadRelatedMovies()
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    func loadRelatedMovies() {
+        MovieDBService.fetchRelatedMovies(movieId: movie.id) { fetchedMovies in
+            self.relatedMovies = fetchedMovies
+        }
     }
 }
 

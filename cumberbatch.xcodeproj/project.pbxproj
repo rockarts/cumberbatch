@@ -103,12 +103,12 @@
 			isa = PBXGroup;
 			children = (
 				5AE3A6BF2C4F598400C9BFE8 /* cumberbatchApp.swift */,
-				5AE3A6C12C4F598400C9BFE8 /* ContentView.swift */,
 				5AE3A6C32C4F598600C9BFE8 /* Assets.xcassets */,
 				5AE3A6C52C4F598600C9BFE8 /* Preview Content */,
-				5A0F63C72C5739E500B023DB /* Movie.swift */,
-				5A0F63C92C573A1400B023DB /* MovieDBService.swift */,
+				5AE3A6C12C4F598400C9BFE8 /* ContentView.swift */,
 				5A0F63CB2C573B1A00B023DB /* MovieDetailView.swift */,
+				5A0F63C92C573A1400B023DB /* MovieDBService.swift */,
+				5A0F63C72C5739E500B023DB /* Movie.swift */,
 				5A0F63CD2C573B9E00B023DB /* MovieDBError.swift */,
 			);
 			path = cumberbatch;
