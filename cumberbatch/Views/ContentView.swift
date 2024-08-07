@@ -8,25 +8,29 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var movies: [Movie] = []
+    @StateObject private var viewModel = MoviesViewModel()
     
     var body: some View {
         NavigationView {
-            List(movies) { movie in
-                NavigationLink(destination: MovieDetailView(movie: movie)) {
-                    MovieRow(movie: movie)
+            Group {
+                if viewModel.isLoading {
+                    ProgressView("Loading movies...")
+                } else if let error = viewModel.error {
+                    ErrorView(error: error, retryAction: {
+                        Task { await viewModel.loadMovies() }
+                    })
+                } else {
+                    List(viewModel.movies) { movie in
+                        NavigationLink(destination: MovieDetailView(movie: movie)) {
+                            MovieRow(movie: movie)
+                        }
+                    }
                 }
             }
             .navigationTitle("Benedict Cumberbatch Movies")
-            .onAppear {
-                loadMovies()
-            }
         }
-    }
-    
-    func loadMovies() {
-        MovieDBService.fetchBenedictCumberbatchMovies { fetchedMovies in
-            self.movies = fetchedMovies
+        .task {
+            await viewModel.loadMovies()
         }
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MovieDetailView: View {
     let movie: Movie
-    @State private var relatedMovies: [Movie] = []
+    @StateObject private var viewModel = MovieDetailViewModel()
     
     var body: some View {
         ScrollView {
@@ -23,7 +23,7 @@ struct MovieDetailView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                 } placeholder: {
-                    Color.gray
+                    ProgressView()
                 }
                 .frame(height: 300)
                 .cornerRadius(10)
@@ -38,29 +38,31 @@ struct MovieDetailView: View {
                     .font(.subheadline)
                     .fontWeight(.bold)
                 
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 16) {
-                        ForEach(relatedMovies) { relatedMovie in
-                            MovieRow(movie: relatedMovie)
+                if viewModel.isLoading {
+                    ProgressView("Loading related movies...")
+                } else if let error = viewModel.error {
+                    ErrorView(error: error, retryAction: {
+                        Task { await viewModel.loadRelatedMovies(for: movie.id) }
+                    })
+                } else {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 16) {
+                            ForEach(viewModel.relatedMovies) { relatedMovie in
+                                MovieRow(movie: relatedMovie)
+                            }
                         }
                     }
                 }
             }
             .padding()
-            .onAppear {
-                loadRelatedMovies()
-            }
         }
         .navigationBarTitleDisplayMode(.inline)
-    }
-    
-    func loadRelatedMovies() {
-        MovieDBService.fetchRelatedMovies(movieId: movie.id) { fetchedMovies in
-            self.relatedMovies = fetchedMovies
+        .task {
+            await viewModel.loadRelatedMovies(for: movie.id)
         }
     }
 }
 
-//#Preview {
-//    MovieDetailView()
-//}
+#Preview {
+    MovieDetailView(movie: Movie(id: 1100099, title: "We Live in Time", posterPath: "/nmU3WgYuv7TyCrImrVtYG2VB6U6.jpg", overview: "Almut finds her life forever changed by a chance encounter with Tobias, a recent divorcé. But after falling for each other, building a home, and starting a family, a difficult truth is revealed."))
+}
